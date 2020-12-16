@@ -1,0 +1,120 @@
+@font-face {
+    font-family: DroidArabicKufi;
+    src: url('../webfonts/DroidArabicKufi.ttf');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: DroidArabicKufi;
+    src: url('../webfonts/DroidKufiRegular.ttf');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: DroidArabicKufi;
+    src: url('../webfonts/DroidArabicKufiBold.ttf');
+    font-weight: 700;
+}
+
+/*  variables and defaul css */
+:root {
+    --primary: #00AFA9;
+    --hover: #158885;
+    --error: #eb1236;
+}
+
+body,
+html {
+    font-family: DroidArabicKufi;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.error-wrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.error-wrapper span {
+    font-size: 20em;
+    font-weight: 700;
+    position: absolute;
+    z-index: 0;
+    color: rgba(245, 245, 245, 0.685);
+    user-select: none;
+}
+
+.error-wrapper h1 {
+    font-weight: 700;
+    color: var(--error);
+    position: relative;
+    z-index: 1;
+    font-size: 3em;
+}
+
+.error-wrapper h2 {
+    font-weight: 700;
+    color: var(--error);
+    position: relative;
+    z-index: 1;
+}
+
+.error-wrapper p {
+    width: 50%;
+    text-align: center;
+    font-size: 0.90rem;
+    position: relative;
+    z-index: 1;
+}
+
+.error-wrapper a {
+    display: block;
+    padding: 10px 20px;
+    background-color: var(--primary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    border-radius: 5px;
+    font-weight: 700;
+    margin-top: 20px;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    transition: .3s ease-in-out;
+}
+
+.error-wrapper a:hover {
+    background-color: var(--hover);
+}
+
+@media(max-width: 1000px) {
+    .error-wrapper {
+        padding: 0 20px;
+    }
+
+    .error-wrapper span {
+        font-size: 8em;
+    }
+
+    .error-wrapper h2 {
+        font-size: 1.4em;
+    }
+
+    .error-wrapper p {
+        width: 95%;
+    }
+
+    .error-wrapper a {
+        font-size: 0.80rem;
+    }
+}
