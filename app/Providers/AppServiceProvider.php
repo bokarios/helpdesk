@@ -14,7 +14,6 @@ use Common\Admin\Analytics\Actions\GetAnalyticsHeaderDataAction;
 use Common\Core\Contracts\AppUrlGenerator;
 use Common\Settings\Settings;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Http\Request;
 use Laravel\Scout\EngineManager;
 use Laravel\Socialite\Contracts\Factory;
 use Validator;
@@ -26,17 +25,13 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Request $request)
+    public function boot(\Illuminate\Http\Request $request)
     {
         $this->registerScoutEngines();
         $this->registerSocialiteEnvatoDriver();
         $this->registerEnvatoFormValidations();
 
         $this->app->bind(\Common\Auth\UserRepository::class, UserRepository::class);
-
-        if ($request->server->has('HTTP_X_ORIGINAL_HOST')) {
-            $this->app['url']->forceRootUrl($request->server->get('HTTP_X_FORWARDED_PROTO') . '://' . $request->server->get('HTTP_X_ORIGINAL_HOST'));
-        }
     }
 
     /**
