@@ -45,17 +45,17 @@
                     <div class="admin">
                         <ul>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle mt-0 pt-0" href="#" id="navbarDropdown" role="button"
+                                <a class="nav-link dropdown-toggle mt-0 pt-1" href="#" id="navbarDropdown" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <div class="profile">
-                                        <img src="{{ asset('demo/img/avatar/hero.jpg') }}" alt="" />
+                                        <img src="{{ asset(Auth::user()->avatar?? 'demo/img/avatar/hero.jpg') }}" alt="" />
                                     </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-left animate slideIn"
                                     aria-labelledby="navbarDropdown">
                                     <div class="title">
                                         <span>
-                                            فلان الفلاني
+                                            {{ Auth::user()->first_name?? 'Anonymous' }}{{' '}}{{ Auth::user()->last_name?? '' }}
                                         </span>
                                     </div>
                                     <a class="dropdown-item" href="#">
@@ -64,29 +64,20 @@
                                     <a class="dropdown-item" href="#">
                                         <i class="far fa-cog"></i> الضبط
                                     </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="far fa-money-bill"></i> الرصيد
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('demo.home') }}">
+                                    <a class="dropdown-item" href="{{ route('demo.logout') }}">
                                         <i class="far fa-sign-out"></i> الخروج
                                     </a>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    <li class="nav-item">
-                        <a class="nav-link" id="" href="{{ route('demo.logout') }}">
-                            <i class="far fa-sign-out"></i>
-                            تسجيل الخروج
-                        </a>
-                    </li>
                     @endif
                 </ul>
             </div>
         </div>
     </nav>
 
-    <header class="header">
+    <header class="header" style="z-index: 1">
         <div class="caption">
             <div class="custom-container">
                 <div class="text text-center">
@@ -96,7 +87,7 @@
                     <p>
                         الان مع شغف انجز مشاريعك عبر الانترنت بكل سهوله
                     </p>
-                    <a href="sign.html">
+                    <a href="{{ route('demo.dashboard.new') }}">
                         تقديم شكوي
                     </a>
                 </div>
@@ -213,7 +204,7 @@
 
 
 
-                            <a href="#">
+                            <a href="{{ route('demo.dashboard.new') }}">
                                 قدم شكوي
                             </a>
                         </div>
@@ -256,7 +247,7 @@
                                 موقع الدعم والمساعدة
                             </p>
 
-                            <a href="#">
+                            <a href="{{ route('demo.dashboard.new') }}">
                                 قدم شكوي
 
                             </a>

@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 parent">
+            <div class="col-12 col-sm-12 col-md-8 col-lg-6 col-xl-6 parent mr-auto">
                 <div class="custom-container">
                     <div class="child text-righted">
                         <div class="caption">
@@ -85,11 +85,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         $('#login').on('click', function(){
+            let btn = $(this)
+            btn.attr('disabled', true).css('background-color', 'var(--hover)')
             let email = $('#email').val()
             let password = $('#password').val()
 
             if(email !== '' && password !== '') {
                 // valid
+                $('#preloader').css('display', 'block')
 
                 $.ajax({
                     url: '/demo/login',
@@ -111,12 +114,20 @@
                                 position: 'top',
                                 showConfirmButton: false,
                             });
+
+                            $('#preloader').fadeOut(1000)
+                            setTimeout(function() {
+                                btn.attr('disabled', false).css('background-color', 'var(--primary)')
+                                
+                                console.log('done')
+                            }, 3000)
                         }
                     },
                     error: err => console.log('Error: ', err)
                 });
                 
             } else {
+                btn.attr('disabled', false).css('background-color', 'var(--primary)')
                 // invalid
                 if(password == '') {
                     Swal.fire({

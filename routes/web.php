@@ -149,6 +149,7 @@ Route::group(['prefix' => 'demo'], function () {
     });
 
     Route::post('login', 'DemoController@login_post')->name('demo.login_post');
+    Route::post('register', 'DemoController@register_post')->name('demo.register_post');
 });
 
 //TICKETS MAIL WEBHOOKS

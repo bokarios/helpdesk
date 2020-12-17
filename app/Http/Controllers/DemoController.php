@@ -93,6 +93,29 @@ class DemoController extends BaseController
         return view('help-center.demo.pages.register');
     }
 
+    public function register_post(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+            'confirm' => 'required|same:password',
+        ]);
+
+        $email = $request->email;
+        $password = $request->password;
+
+        // new user
+        $user = new \App\User();
+        $user->email = $email;
+        $user->password = bcrypt($password);
+
+        if ($user->save()) {
+            return ['msg' => 'success'];
+        }
+
+        return ['msg' => 'fail'];
+    }
+
     public function password_reset()
     {
         return view('help-center.demo.pages.reset-pass');
