@@ -38,29 +38,56 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">عنوان الشكوي </th>
+                                                <th scope="col">عنوان الشكوى </th>
+                                                <th scope="col">تفاصيل الشكوى </th>
                                                 <th scope="col">الفئة</th>
                                                 <th scope="col"> الحاله</th>
                                             </tr>
                                         </thead>
                                         <tbody class="list">
+                                            <?php $i = 1; ?>
                                             @foreach ($tickets as $ticket)
                                                 <tr>
-                                                    <th scope="row">{{ $ticket->id }}</th>
+                                                    <th scope="row">{{ $i }}</th>
                                                     <td>
-                                                        <a href="{{ route('demo.dashboard.details', 1) }}">
+                                                        <a href="{{ route('demo.dashboard.details', $ticket->id) }}">
                                                             {{ $ticket->subject }}
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        {{ $ticket->categories[0]['display_name'] }}
+                                                        {{ Str::limit($ticket->replies()->first()->body, 24) }}
                                                     </td>
                                                     <td>
-                                                        <span class="status on-progress">
-                                                            {{ $ticket->status }}
-                                                        </span>
+                                                        @foreach ($ticket->categories as $category)
+                                                            <span class="badge badge-primary p-2">
+                                                                {{ Str::title($category->display_name) }}
+                                                            </span>    
+                                                        @endforeach
                                                     </td>
-                                                </tr>    
+                                                    <td>
+                                                        @if ($ticket->status == 'open')
+                                                            <span class="status on-progress">
+                                                                مفتوحة
+                                                            </span>
+                                                        @endif
+                                                        @if ($ticket->status == 'closed')
+                                                            <span class="status bg-secondary">
+                                                                مغلقة
+                                                            </span>
+                                                        @endif
+                                                        @if ($ticket->status == 'pending')
+                                                            <span class="status bg-warning">
+                                                                معلقة
+                                                            </span>
+                                                        @endif
+                                                        @if ($ticket->status == 'spam')
+                                                            <span class="status bg-danger">
+                                                                عشوائية
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                <?php $i++; ?>    
                                             @endforeach
                                         </tbody>
                                     </table>

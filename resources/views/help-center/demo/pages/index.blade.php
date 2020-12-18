@@ -36,7 +36,7 @@
                     </li>
                     @if (!Auth::check())
                     <li class="nav-item">
-                        <a class="nav-link sign" id="" href="{{ route('demo.login') }}">
+                        <a class="nav-link sign" id="" href="{{ route('login') }}">
                             <i class="far fa-user"></i>
                             تسجيل الدخول
                         </a>

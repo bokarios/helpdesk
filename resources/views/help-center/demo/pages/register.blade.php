@@ -95,7 +95,7 @@
                 $('#preloader').css('display', 'block')
 
                 $.ajax({
-                    url: '/demo/register',
+                    url: '{{ route('demo.register_post') }}',
                     method: 'POST',
                     data: {email, password, confirm, _token: '{{ csrf_token() }}'},
                     success: function(data) {

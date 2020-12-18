@@ -7,16 +7,13 @@
     <title>
         @yield('title', 'Help Desk')
     </title>
+    <!-- styles sources -->
     <link rel="stylesheet" href="{{ asset('demo/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('demo/css/font-awesome.css') }}">
     <link rel="stylesheet" href="{{ asset('demo/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('demo/css/style.css') }}">
-    {{-- <link rel="stylesheet" href="{{ asset('demo/css/onboarding.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('demo/css/widgets.css') }}">
     <link rel="stylesheet" href="{{ asset('demo/css/dashboard.css') }}">
-    {{-- <link rel="stylesheet" href="{{ asset('demo/css/owl.theme.default.css') }}"> --}}
-    {{-- <link rel="stylesheet" href="{{ asset('demo/css/owl.carousel.min.css') }}"> --}}
-
     @yield('styles')
 </head>
 
@@ -32,6 +29,7 @@
     <script src="{{ asset('demo/js/index.js') }}"></script>
     <script src="{{ asset('demo/js/pageloader.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     @yield('scripts')
 </body>
 

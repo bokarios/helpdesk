@@ -68,7 +68,7 @@
                                 </div>
                             </form>
                             <div class="text-center">
-                                <a href="{{ route('demo.register') }}">
+                                <a href="{{ route('register') }}">
                                     ليس لديك حساب ؟ <span>سجل الان</span>
                                 </a>
                             </div>
@@ -95,12 +95,12 @@
                 $('#preloader').css('display', 'block')
 
                 $.ajax({
-                    url: '/demo/login',
+                    url: '{{ route('demo.login_post') }}',
                     method: 'POST',
                     data: {email, password, _token: '{{ csrf_token() }}'},
                     success: function(data) {
                         if(data.msg == 'success') {
-                            if("{{ Auth::user()->isSuperAdmin??'' }}") {
+                            if(data.role == 'admin') {
                                 window.location.href = '/admin'
                             } else {
                                 window.location.href = '{{ route('demo.home') }}'

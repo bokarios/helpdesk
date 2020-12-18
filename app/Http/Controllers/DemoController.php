@@ -80,9 +80,11 @@ class DemoController extends BaseController
 
         $email = $request->email;
         $password = $request->password;
+        $role = '';
 
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
-            return ['msg' => 'success'];
+            Auth::user()->isSuperAdmin() ? $role = 'admin' : $role = 'customer';
+            return ['msg' => 'success', 'role' => $role];
         }
 
         return ['msg' => 'fail'];

@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
         Common\CommonServiceProvider::class,
+		Barryvdh\Omnipay\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -230,6 +231,7 @@ return [
 
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Image' => Intervention\Image\Facades\Image::class,
+		'Omnipay' => Barryvdh\Omnipay\Facade::class,
 
     ],
 

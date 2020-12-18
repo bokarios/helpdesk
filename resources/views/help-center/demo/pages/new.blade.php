@@ -30,7 +30,85 @@
 @include('help-center.demo.partials._loader')
 
 @section('content')
-    
+<script src="{{ asset('demo/js/jquery.js') }}"> </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    function add_ticket() {
+        let sub = $('#subject').val();
+        let cat = $('#category').val();
+        let bod = $('#body').val();
+
+        // console.log('clicked')
+
+        // console.log('sub: ', sub)
+        // console.log('cat: ', cat)
+        // console.log('bod: ', bod)
+
+        if(sub !== '' && cat !== '' && bod !== '') {
+            // valid
+            $('#preloader').css('display', 'block');
+
+            $.ajax({
+                url: '/secure/tickets',
+                method: 'POST',
+                data: {subject: sub, category: cat, body: bod, _token: '{{ csrf_token() }}'},
+                success: function(data) {
+                    if(data.id) {
+                        // close loader
+                        $('#preloader').fadeOut(1000);
+
+                        Swal.fire({
+                            text: 'تمت إضافة الشكوى',
+                            icon: 'success',
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                        });
+
+                        $('#subject').val('');
+                        $('#category').val('');
+                        $('#body').val('');
+                    }
+                },
+                error: err => console.log('Error: ', err)
+            });
+        } else {
+            // invalid
+            if(bod == '') {
+                Swal.fire({
+                    text: 'الرجاء كتابة تفاصيل الشكوى',
+                    icon: 'warning',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 4000,
+                });    
+            }
+            
+            if(cat == '') {
+                Swal.fire({
+                    text: 'الرجاء اختيار الفئة',
+                    icon: 'warning',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 4000,
+                });    
+            }
+            
+            if(sub == '') {
+                Swal.fire({
+                    text: 'الرجاء كتابة عنوان الشكوى',
+                    icon: 'warning',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 4000,
+                });    
+            }
+        }
+    }
+</script>
     <!--dashboard-->
     <div class="dashboard-wrapper text-righted">
         @include('help-center.demo.partials._sidebar')
@@ -51,7 +129,7 @@
                             </h6>
 
                             <div class="dash-form">
-                                <form method="POST" enctype="multipart/form-data" id="form">
+                                <form id="tick-form">
                                     <div class="row">
                                         <div class="dash-input col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                             <label for="">
@@ -97,14 +175,13 @@
                                         </div> --}}
                                     </div>
 
-                                    <button class="form-add" type="button" id="add">
+                                    <button class="form-add" type="button" id="add" onclick="add_ticket()">
                                         اضافه الشكوى
                                     </button>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <!---->
 
                     <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
                         <div class="child">
@@ -140,89 +217,4 @@
         </div>
     </div>
 
-@endsection
-
-@section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <script>
-        let loader = $('#preloader');
-        $('#add').on('click', function(){
-            let sub = $('#subject').val();
-            let cat = $('#category').val();
-            let bod = $('#body').val();
-
-            // console.log('sub: ', sub)
-            // console.log('cat: ', cat)
-            // console.log('bod: ', bod)
-
-            if(sub !== '' && cat !== '' && bod !== '') {
-                // valid
-                loader.css('display', 'block');
-
-                $.ajax({
-                    url: '/secure/tickets',
-                    method: 'POST',
-                    data: {subject: sub, category: cat, body: bod, _token: '{{ csrf_token() }}'},
-                    success: function(data) {
-                        if(data.id) {
-                            // close loader
-                            loader.css('display', 'none');
-
-                            Swal.fire({
-                                text: 'تمت إضافة الشكوى',
-                                icon: 'success',
-                                toast: true,
-                                position: 'top',
-                                showConfirmButton: false,
-                            });
-
-                            $('#subject').val('');
-                            $('#category').val('');
-                            $('#body').val('');
-                        }
-                    },
-                    error: err => console.log('Error: ', err)
-                });
-            } else {
-                // invalid
-                if(bod == '') {
-                    Swal.fire({
-                        text: 'الرجاء كتابة تفاصيل الشكوى',
-                        icon: 'warning',
-                        toast: true,
-                        position: 'top',
-                        showConfirmButton: false,
-                    });    
-                }
-                
-                if(cat == '') {
-                    Swal.fire({
-                        text: 'الرجاء اختيار الفئة',
-                        icon: 'warning',
-                        toast: true,
-                        position: 'top',
-                        showConfirmButton: false,
-                    });    
-                }
-                
-                if(sub == '') {
-                    Swal.fire({
-                        text: 'الرجاء كتابة عنوان الشكوى',
-                        icon: 'warning',
-                        toast: true,
-                        position: 'top',
-                        showConfirmButton: false,
-                    });    
-                }
-
-                // Swal.fire({
-                //     text: 'الرجاء اكمال البيانات بشكل صحيح',
-                //     icon: 'warning',
-                //     toast: true,
-                //     position: 'top',
-                //     showConfirmButton: false,
-                // });
-            }
-        });
-    </script>
 @endsection

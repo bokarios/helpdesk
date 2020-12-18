@@ -11,6 +11,29 @@
 |
 */
 
+// Demo
+Route::get('/', 'DemoController@index')->name('demo.home');
+//Route::group(['prefix' => 'demo'], function () {
+//Route::get('help-center', 'DemoController@index')->name('demo.home');
+Route::get('login', 'DemoController@login')->name('login');
+Route::get('register', 'DemoController@register')->name('register');
+Route::get('password/reset', 'DemoController@password_reset')->name('demo.forget.password');
+Route::get('logout', function () {
+    Auth::logout();
+    return redirect()->route('login');
+})->name('demo.logout');
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('dashboard', 'DemoController@dashboard')->name('demo.dashboard');
+    Route::get('dashboard/list', 'DemoController@dashboard_list')->name('demo.dashboard.list');
+    Route::get('dashboard/new', 'DemoController@new_complain')->name('demo.dashboard.new');
+    Route::get('dashboard/{id}', 'DemoController@complain_details')->name('demo.dashboard.details');
+});
+
+Route::post('login', 'DemoController@login_post')->name('demo.login_post');
+Route::post('register', 'DemoController@register_post')->name('demo.register_post');
+//});
+
 Route::group(['prefix' => 'secure'], function () {
     //REPORTS
     Route::get('reports/envato/earnings', 'ReportsController@envatoEarnings');
@@ -130,34 +153,12 @@ Route::group(['prefix' => 'secure'], function () {
     Route::apiResource('notification-subscription', 'NotificationSubscriptionController');
 });
 
-// Demo
-Route::group(['prefix' => 'demo'], function () {
-    Route::get('help-center', 'DemoController@index')->name('demo.home');
-    Route::get('login', 'DemoController@login')->name('demo.login');
-    Route::get('register', 'DemoController@register')->name('demo.register');
-    Route::get('password/reset', 'DemoController@password_reset')->name('demo.forget.password');
-    Route::get('logout', function () {
-        Auth::logout();
-        return redirect()->route('demo.login');
-    })->name('demo.logout');
-
-    Route::group(['middleware' => 'auth'], function () {
-        Route::get('dashboard', 'DemoController@dashboard')->name('demo.dashboard');
-        Route::get('dashboard/list', 'DemoController@dashboard_list')->name('demo.dashboard.list');
-        Route::get('dashboard/new', 'DemoController@new_complain')->name('demo.dashboard.new');
-        Route::get('dashboard/{id}', 'DemoController@complain_details')->name('demo.dashboard.details');
-    });
-
-    Route::post('login', 'DemoController@login_post')->name('demo.login_post');
-    Route::post('register', 'DemoController@register_post')->name('demo.register_post');
-});
-
 //TICKETS MAIL WEBHOOKS
 Route::post('tickets/mail/incoming', 'TicketsMailController@handleIncoming');
 Route::post('tickets/mail/failed', 'TicketsMailController@handleFailed');
 
 //FRONT-END ROUTES THAT NEED TO BE PRE-RENDERED
-Route::get('/', 'HelpCenterController@index')->middleware('prerenderIfCrawler');
+//Route::get('/', 'HelpCenterController@index')->middleware('prerenderIfCrawler');
 Route::get('help-center', 'HelpCenterController@index')->middleware('prerenderIfCrawler');
 Route::get('help-center/articles/{articleId}/{slug}', 'ArticleController@show')->middleware('prerenderIfCrawler');
 Route::get('help-center/articles/{parentId}/{articleId}/{slug}', 'ArticleController@show')->middleware('prerenderIfCrawler');
