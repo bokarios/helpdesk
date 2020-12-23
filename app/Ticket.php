@@ -1,4 +1,6 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Carbon\Carbon;
 use DB;
@@ -18,6 +20,8 @@ use Laravel\Scout\Searchable;
  *
  * @property integer $id
  * @property string $subject
+ * @property string $project
+ * @property string $url
  * @property integer $user_id
  * @property Carbon $closed_at
  * @property Carbon $created_at
@@ -60,7 +64,7 @@ class Ticket extends Model
             $array['replies'] = $array['replies']->implode(',');
             $array['user'] = Arr::get($array, 'user.email');
         }
-        
+
         return $array;
     }
 
@@ -202,7 +206,7 @@ class Ticket extends Model
     public function basicSearch($query)
     {
         return $this->where('subject', 'LIKE', "%$query%")
-            ->orWhereHas('replies', function(Builder $q) use ($query) {
+            ->orWhereHas('replies', function (Builder $q) use ($query) {
                 return $q->where('type', Reply::REPLY_TYPE)->where('body', 'LIKE', "%$query%");
             });
     }
@@ -216,7 +220,7 @@ class Ticket extends Model
     {
         //if tags are already loaded, use those records to avoid extra db query
         if ($this->relationLoaded('tags')) {
-            $tag = Arr::first($this->tags, function($tag) {
+            $tag = Arr::first($this->tags, function ($tag) {
                 return $tag['type'] === 'status';
             });
 
@@ -237,16 +241,15 @@ class Ticket extends Model
      */
     public function getUploadsCountAttribute($value)
     {
-        if (is_numeric($value)) return (integer) $value;
+        if (is_numeric($value)) return (int) $value;
 
-        return DB::table('file_entry_models')->whereIn('model_id', function ($query)
-            {
-                /** @var $query Builder */
-                return $query
-                    ->from('replies')
-                    ->where('replies.ticket_id', $this->id)
-                    ->select('id');
-            })
+        return DB::table('file_entry_models')->whereIn('model_id', function ($query) {
+            /** @var $query Builder */
+            return $query
+                ->from('replies')
+                ->where('replies.ticket_id', $this->id)
+                ->select('id');
+        })
             ->where('model_type', Reply::class)
             ->count();
     }

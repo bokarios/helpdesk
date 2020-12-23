@@ -26,7 +26,7 @@
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <div class="child">
                                 <div class="table-upper">
-                                    <h4> الشكاوي الحاليه</h4>
+                                    <h4>{{ $title }}</h4>
 
                                     <a href="{{ route('demo.dashboard.new') }}">
                                         <i class="far fa-plus"></i>
@@ -55,7 +55,7 @@
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        {{ Str::limit($ticket->replies()->first()->body, 24) }}
+                                                        {{ Str::limit($ticket->details, 24) }}
                                                     </td>
                                                     <td>
                                                         @foreach ($ticket->categories as $category)

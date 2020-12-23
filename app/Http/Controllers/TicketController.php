@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Events\TicketCreated;
 use App\Events\TicketUpdated;
@@ -80,10 +82,12 @@ class TicketController extends BaseController
             'user_id'       => 'integer|exists:users,id',
             'subject'       => 'required|min:3|max:255',
             'category'      => 'required|integer|min:1|envatoSupportActive',
-            'body'          => 'required|min:3',
+            'details'       => 'required|min:3',
             'uploads'       => 'array|max:10|exists:file_entries,id',
             'tags'          => 'array|min:1|max:10',
             'tags.*'        => 'integer|min:1',
+            'project'       => 'required',
+            'url'           => 'required|url',
         ]);
 
         $ticket = $this->ticketRepository->create($this->request->all());
@@ -137,11 +141,11 @@ class TicketController extends BaseController
         $query = app(Ticket::class)
             ->join('taggables', 'taggables.taggable_id', '=', 'tickets.id')
             ->where('taggables.taggable_type', Ticket::class)
-            ->join('tags', function(JoinClause $join) {
+            ->join('tags', function (JoinClause $join) {
                 $join->on('tags.id', '=', 'taggables.tag_id');
                 $join->on('tags.type', '=', DB::raw("'status'"));
             })->select('tickets.*', 'tags.name as status')
-            ->where(function(Builder $builder) {
+            ->where(function (Builder $builder) {
                 $builder->whereNull('assigned_to')->orWhere('assigned_to', Auth::id());
             });
 

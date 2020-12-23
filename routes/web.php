@@ -23,9 +23,12 @@ Route::get('logout', function () {
     return redirect()->route('login');
 })->name('demo.logout');
 
+// ajax refresh
+Route::get('replies/refresh/{id}', 'DemoController@replies_refresh')->name('replies.refresh');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', 'DemoController@dashboard')->name('demo.dashboard');
-    Route::get('dashboard/list', 'DemoController@dashboard_list')->name('demo.dashboard.list');
+    Route::get('dashboard/list/{status?}', 'DemoController@dashboard_list')->name('demo.dashboard.list');
     Route::get('dashboard/new', 'DemoController@new_complain')->name('demo.dashboard.new');
     Route::get('dashboard/{id}', 'DemoController@complain_details')->name('demo.dashboard.details');
 });
@@ -75,6 +78,7 @@ Route::group(['prefix' => 'secure'], function () {
 
     //REPLIES
     Route::get('replies/{id}', 'RepliesController@show');
+    Route::post('replies', 'RepliesController@store')->name('reply.store');
     Route::get('replies/{id}/original', 'OriginalReplyEmailController@show');
     Route::put('replies/{id}', 'RepliesController@update');
     Route::delete('replies/{id}', 'RepliesController@destroy');

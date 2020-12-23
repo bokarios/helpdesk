@@ -11,14 +11,14 @@
       <div class="sidebar-links">
           <ul>
               <li>
-                  <a href="#">
+                  <a href="{{ route('demo.dashboard.list') }}">
                       <i class="far fa-edit"></i>
                       الشكاوي الحالية
                   </a>
               </li>
 
               <li>
-                  <a href="#">
+                  <a href="{{ route('demo.dashboard.list', 'open') }}">
                       <i class="far fa-tasks"></i>
                       الشكاوي المفتوحة
                   </a>
@@ -26,7 +26,7 @@
 
 
               <li>
-                  <a href="#">
+                  <a href="{{ route('demo.dashboard.list', 'close') }}">
                       <i class="far fa-archive"></i>
                       الشكاوي القديمة
                   </a>

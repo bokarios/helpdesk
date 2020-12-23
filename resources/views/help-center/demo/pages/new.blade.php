@@ -31,27 +31,45 @@
 
 @section('content')
 <script src="{{ asset('demo/js/jquery.js') }}"> </script>
+<script src="{{ asset('demo/js/formToJson.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
     function add_ticket() {
         let sub = $('#subject').val();
         let cat = $('#category').val();
         let bod = $('#body').val();
+        let prj = $('#project').val();
+        let url = $('#url').val();
+        let upd = $('#chooseFile');
+        // let uploads = [];
 
-        // console.log('clicked')
+        // file handling
+        // if(upd[0].files.length > 0) {
+        //     uploads  = new FormData();
+        //     uploads.append('uploads', upd[0].files);
+        //     console.log(upd[0].files);
+        // }
 
-        // console.log('sub: ', sub)
-        // console.log('cat: ', cat)
-        // console.log('bod: ', bod)
+        // console.log(uploads.formToJson())
 
-        if(sub !== '' && cat !== '' && bod !== '') {
+        if(sub !== '' && cat !== '' && bod !== '' && prj !== '' && url !== '') {
             // valid
-            $('#preloader').css('display', 'block');
+            $('#preloader').show();
 
             $.ajax({
                 url: '/secure/tickets',
                 method: 'POST',
-                data: {subject: sub, category: cat, body: bod, _token: '{{ csrf_token() }}'},
+                // processData: false,
+                // contentType: false,
+                data: {
+                    // uploads: uploads,
+                    subject: sub,
+                    category: cat,
+                    details: bod,
+                    project: prj,
+                    url: url,
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function(data) {
                     if(data.id) {
                         // close loader
@@ -63,11 +81,14 @@
                             toast: true,
                             position: 'top',
                             showConfirmButton: false,
+                            timer: 5000
                         });
 
                         $('#subject').val('');
                         $('#category').val('');
                         $('#body').val('');
+                        $('#project').val('');
+                        $('#url').val('');
                     }
                 },
                 error: err => console.log('Error: ', err)
@@ -95,7 +116,29 @@
                     timer: 4000,
                 });    
             }
+
+            if(url == '') {
+                Swal.fire({
+                    text: 'الرجاء كتابة رابط المشروع',
+                    icon: 'warning',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 4000,
+                });    
+            }
             
+            if(prj == '') {
+                Swal.fire({
+                    text: 'الرجاء كتابة المشروع الشكوى',
+                    icon: 'warning',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 4000,
+                });    
+            }
+
             if(sub == '') {
                 Swal.fire({
                     text: 'الرجاء كتابة عنوان الشكوى',
@@ -135,21 +178,43 @@
                                             <label for="">
                                                 عنوان الشكوي
                                             </label>
-                                            <input type="text" name="subject" id="subject">
+                                            <input type="text" name="subject" id="subject" class="@error('subject') border-danger @enderror">
+                                            @error('subject')
+                                                <p class="text-right text-danger">
+                                                    {{$message}}
+                                                </p>
+                                            @enderror
                                         </div>
 
-                                        {{-- <div class="dash-input col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                        <div class="dash-input col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                             <label for="">
                                                 المشروع المراد فتح الشكوي تبعه
                                             </label>
-                                            <input type="text" name="" id="">
-                                        </div> --}}
+                                            <input type="text" name="project" id="project" class="@error('project') border-danger @enderror">
+                                            @error('project')
+                                                <p class="text-right text-danger">
+                                                    {{$message}}
+                                                </p>
+                                            @enderror
+                                        </div>
+
+                                        <div class="dash-input col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                            <label for="">
+                                                رابط المشروع
+                                            </label>
+                                            <input type="text" name="url" id="url" class="text-left @error('url') border-danger @enderror" placeholder="http://example.com">
+                                            @error('url')
+                                                <p class="text-right text-danger">
+                                                    {{$message}}
+                                                </p>
+                                            @enderror
+                                        </div>
 
                                         <div class="dash-input col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                             <label for="">
                                                 الفئة
                                             </label>
-                                            <select name="category" id="category" class="choose">
+                                            <select name="category" id="category" class="choose @error('category') border-danger @enderror">
                                                 <option value="" selected>إختر الفئة</option>
                                                 @foreach (App\Tag::where('type', 'category')->get() as $item)
                                                     <option value="{{ $item->id }}">
@@ -157,13 +222,23 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+                                            @error('category')
+                                                <p class="text-right text-danger">
+                                                    {{$message}}
+                                                </p>
+                                            @enderror
                                         </div>
 
                                         <div class="dash-input col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                             <label for="">
                                                 تفاصيل الشكوي
                                             </label>
-                                            <textarea name="body" id="body"></textarea>
+                                            <textarea name="body" id="body" class="@error('body') border-danger @enderror"></textarea>
+                                            @error('body')
+                                                <p class="text-right text-danger">
+                                                    {{$message}}
+                                                </p>
+                                            @enderror
                                         </div>
 
                                         {{-- <div class="dash-input col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
@@ -171,7 +246,12 @@
                                                 <i class="far fa-upload"></i>
                                                 اختر ملف
                                             </label>
-                                            <input type="file" id="chooseFile">
+                                            <input type="file" name="uploads" id="chooseFile" multiple>
+                                            @error('uploads')
+                                                <p class="text-right text-danger">
+                                                    {{$message}}
+                                                </p>
+                                            @enderror
                                         </div> --}}
                                     </div>
 
@@ -189,22 +269,23 @@
                                 اتبع الخطوات الصحيحه لاضافه الشكوي
                             </h6>
                             <p>
-                                اتبع الخطوات الصحيحه لاضافه الشكوي
-                                اتبع الخطوات الصحيحه لاضافه الشكوي
-                                اتبع الخطوات الصحيحه لاضافه الشكوي
-
+                                الرجاء مراعاة الآتي عند اضافة شكوى
                             </p>
                             <ul>
                                 <li>
-                                    اتبع الخطوات الصحيحه لاضافه الشكوي
+                                    استخدم عنوان واضح يختصر سبب الشكوى قدر الامكان.
                                 </li>
 
                                 <li>
-                                    اتبع الخطوات الصحيحه لاضافه الشكوي
+                                    كتابة الاسم الرسمي للمشروع.
                                 </li>
 
                                 <li>
-                                    اتبع الخطوات الصحيحه لاضافه الشكوي
+                                    الحرص على سلامة الرابط المرفق مع الشكوى.
+                                </li>
+                                
+                                <li>
+                                    الحرص على ذكر التفاصيل المهمة و عدم الاذهاب في الشرح.
                                 </li>
                             </ul>
                         </div>

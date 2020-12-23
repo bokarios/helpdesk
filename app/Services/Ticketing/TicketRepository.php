@@ -1,4 +1,6 @@
-<?php namespace App\Services\Ticketing;
+<?php
+
+namespace App\Services\Ticketing;
 
 use Carbon\Carbon;
 use DB;
@@ -15,7 +17,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Str;
 
-class TicketRepository {
+class TicketRepository
+{
 
     /**
      * Reply model instance.
@@ -74,8 +77,7 @@ class TicketRepository {
         Settings $settings,
         TagRepository $tagRepository,
         ReplyRepository $replyRepository
-    )
-    {
+    ) {
         $this->tag = $tag;
         $this->reply = $reply;
         $this->ticket = $ticket;
@@ -129,10 +131,10 @@ class TicketRepository {
      */
     public function create($data, $markAsOpen = true)
     {
-        if ( ! Arr::has($data, 'user_id')) $data['user_id'] = Auth::user()->id;
+        if (!Arr::has($data, 'user_id')) $data['user_id'] = Auth::user()->id;
 
         /** @var Ticket $ticket */
-        $ticket = $this->ticket->create(['user_id' => $data['user_id'], 'subject' => $data['subject']]);
+        $ticket = $this->ticket->create(['user_id' => $data['user_id'], 'subject' => $data['subject'], 'project' => $data['project'], 'url' => $data['url'], 'details' => $data['details']]);
 
         if ($markAsOpen) {
             $tagName = Arr::get($data, 'status', 'open');
@@ -143,9 +145,11 @@ class TicketRepository {
             $this->tagRepository->attachById($ticket, $data['category']);
         }
 
-        $reply = $this->replyRepository->create(Arr::only($data, ['body', 'user_id']), $ticket);
+        if (isset($data['body']) && !empty($data['body'])) {
+            $reply = $this->replyRepository->create(Arr::only($data, ['body', 'user_id']), $ticket);
+        }
 
-        if (isset($data['uploads']) && ! empty($data['uploads'])) {
+        if (isset($data['uploads']) && !empty($data['uploads'])) {
             $reply->uploads()->sync($data['uploads'], false);
         }
 
@@ -161,8 +165,8 @@ class TicketRepository {
     public function assignToAgent($ticketsIds, $agentId = null)
     {
         $this->ticket
-             ->whereIn('id', $ticketsIds)
-             ->update(['assigned_to' => $agentId]);
+            ->whereIn('id', $ticketsIds)
+            ->update(['assigned_to' => $agentId]);
     }
 
     /**
@@ -178,7 +182,7 @@ class TicketRepository {
 
         $ticket->setRelation('replies', $this->replyRepository->getRepliesForTicket($ticket->id, 10));
 
-        $ticket->replies->load('user', 'uploads')->each(function(Reply $reply) {
+        $ticket->replies->load('user', 'uploads')->each(function (Reply $reply) {
             $reply->created_at_formatted = $reply->created_at->diffForHumans();
         });
 
@@ -199,12 +203,12 @@ class TicketRepository {
         $rows = DB::table('taggables')->whereIn('taggable_id', $ticketIds)->where('tag_id', $tagId)->where('taggable_type', Ticket::class)->get();
 
         //remove ticket ids that already have specified tag attached
-        foreach($rows as $existingRel) {
+        foreach ($rows as $existingRel) {
             $key = array_search($existingRel->taggable_id, $ticketIds);
             if ($key !== false) unset($ticketIds[$key]);
         }
 
-        $data = array_map(function($id) use($tagId) {
+        $data = array_map(function ($id) use ($tagId) {
             return ['tag_id' => $tagId, 'taggable_id' => $id, 'taggable_type' => Ticket::class];
         }, $ticketIds);
 
@@ -239,11 +243,11 @@ class TicketRepository {
         $existing = $tags->pluck('id')->toArray();
 
         //find tag of status we should put ticket in
-        $statusTag = $tags->first(function($tag) use($statusName)  {
+        $statusTag = $tags->first(function ($tag) use ($statusName) {
             return $tag->name === $statusName;
         });
 
-        if ( ! $statusTag) return;
+        if (!$statusTag) return;
 
         //remove existing status tags from tickets
         DB::table('taggables')
@@ -253,7 +257,7 @@ class TicketRepository {
             ->delete();
 
         //add new status tag to tickets
-        $insert = collect($ticketIds)->map(function($id) use($statusTag) {
+        $insert = collect($ticketIds)->map(function ($id) use ($statusTag) {
             return ['tag_id' => $statusTag->id, 'taggable_id' => $id, 'taggable_type' => Ticket::class];
         });
 
@@ -277,7 +281,7 @@ class TicketRepository {
     {
         $newTag = $this->tagRepository->findByName('open');
 
-        if ( ! $newTag) return false;
+        if (!$newTag) return false;
 
         $currentTag = $this->tagRepository->getByType('status', $ticket)->first();
 

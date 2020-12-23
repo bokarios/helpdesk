@@ -92,7 +92,7 @@
 
             if(email !== '' && password !== '') {
                 // valid
-                $('#preloader').css('display', 'block')
+                $('#preloader').show();
 
                 $.ajax({
                     url: '{{ route('demo.login_post') }}',
@@ -113,13 +113,12 @@
                                 toast: true,
                                 position: 'top',
                                 showConfirmButton: false,
+                                timer: 4000
                             });
 
                             $('#preloader').fadeOut(1000)
                             setTimeout(function() {
                                 btn.attr('disabled', false).css('background-color', 'var(--primary)')
-                                
-                                console.log('done')
                             }, 3000)
                         }
                     },
@@ -136,6 +135,7 @@
                         toast: true,
                         position: 'top',
                         showConfirmButton: false,
+                        timer: 4000
                     });
                 }
                 if(email == '') {
@@ -145,6 +145,7 @@
                         toast: true,
                         position: 'top',
                         showConfirmButton: false,
+                        timer: 4000
                     });
                 }
             }

@@ -52,16 +52,16 @@
                                     </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-left animate slideIn"
-                                    aria-labelledby="navbarDropdown">
+                                    aria-labelledby="navbarDropdown" style="width: max-content">
                                     <div class="title">
                                         <span>
                                             {{ Auth::user()->first_name?? 'Anonymous' }}{{' '}}{{ Auth::user()->last_name?? '' }}
                                         </span>
                                     </div>
-                                    <a class="dropdown-item" href="#">
+                                    {{-- <a class="dropdown-item" href="#">
                                         <i class="far fa-user"></i> الصفحة الشخصية
-                                    </a>
-                                    <a class="dropdown-item" href="#">
+                                    </a> --}}
+                                    <a class="dropdown-item" href="/account/settings">
                                         <i class="far fa-cog"></i> الضبط
                                     </a>
                                     <a class="dropdown-item" href="{{ route('demo.logout') }}">

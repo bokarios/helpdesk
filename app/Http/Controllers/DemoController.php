@@ -136,10 +136,29 @@ class DemoController extends BaseController
         return view('help-center.demo.pages.new');
     }
 
-    public function dashboard_list()
+    public function dashboard_list($status = null)
     {
-        $tickets = Ticket::where('user_id', auth()->user()->id)->get();
+        $tickets = '';
+        $title = '';
+
+        if ($status == 'open') {
+            $t = \App\Tag::where('name', 'open')->first();
+            $tickets = $t->tickets->where('user_id', auth()->user()->id);
+            $title = 'الشكاوي المفتوحة';
+        } else if ($status == 'close') {
+            $t = \App\Tag::where('name', 'closed')->first();
+            $tickets = $t->tickets->where('user_id', auth()->user()->id);
+            $title = 'الشكاوي القديمة';
+        } else {
+            $t = \App\Tag::where('name', 'pending')->orWhere('name', 'spam')->get();
+            $tic_p = $t[0]->tickets->where('user_id', auth()->user()->id);
+            $tic_s = $t[1]->tickets->where('user_id', auth()->user()->id);
+            $tickets = $tic_p->merge($tic_s);
+            $title = 'الشكاوي الحالية';
+        }
+
         $data['tickets'] = $tickets;
+        $data['title'] = $title;
 
         return view('help-center.demo.pages.list', $data);
     }
